@@ -83,4 +83,8 @@ class AllUserController extends Controller
     {
         //
     }
+    public function Registration()
+    {
+        return view('pages.registration');
+    }
 }
