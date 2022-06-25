@@ -14,7 +14,7 @@ label{
     <div class="title">
     <h2 class="text-center">Registration</h2>
     </div>
-<form action="">
+<form action="{{route('registration')}}" method="post">
     @csrf
 <div class="mb-3">
   <label for="exampleFormControlInput1" class="form-label">Full Name</label>
@@ -45,7 +45,7 @@ label{
 @enderror
 <div class="mb-3">
   <label for="exampleFormControlInput1" class="form-label">NID Number</label>
-  <input type="number" class="form-control input" id="exampleFormControlInput1" name="nid" placeholder="420*********">
+  <input type="text" class="form-control input" id="exampleFormControlInput1" name="nid" placeholder="420*********">
 </div>
 @error('nid')
 <div class="alert alert-danger" role="alert">
@@ -70,11 +70,36 @@ label{
   {{$message}}
 </div>
 @enderror
+<br>
+<span class="text-success">Select your role :</span>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="type" id="inlineRadio1" value="buyer">
+  <label class="form-check-label" for="inlineRadio1">User</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="type" id="inlineRadio2" value="seller">
+  <label class="form-check-label" for="inlineRadio2">Shop</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="type" id="inlineRadio3" value="vendor" >
+  <label class="form-check-label" for="inlineRadio3">Vendor</label>
+</div>
+<div class="form-check form-check-inline">
+  <input class="form-check-input" type="radio" name="type" id="inlineRadio3" value="deliveryman" >
+  <label class="form-check-label" for="inlineRadio3">Delivery Man</label>
+</div>@error('type')
+<div class="alert alert-danger" role="alert">
+  {{$message}}
+</div>
+@enderror
+
+
 <div class="mb-3">
+<br>
   <input type="submit" class="form-control btn btn-success" value="SUBMIT">
 </div>
 </form>
-<p class="text-center">Already Have an Account? <a href="">Login</a></p>
+<p class="text-center">Already Have an Account? <a href="{{route('login')}}">Login</a></p>
 </div>
 </div>
 @endsection
