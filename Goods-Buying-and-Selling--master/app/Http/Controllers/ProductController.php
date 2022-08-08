@@ -2,9 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Models\product;
+
+use App\Http\Requests\StoreproductRequest;
+use App\Http\Requests\UpdateproductRequest;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
+////
+
+// use Illuminate\Support\Facades\DB;
+// use Redirect,Response,File;
+ 
+// use Illuminate\Support\Facades\Storage;
+////
+
 
 class ProductController extends Controller
 {
@@ -31,10 +44,10 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProductRequest  $request
+     * @param  \App\Http\Requests\StoreproductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreproductRequest $request)
     {
         //
     }
@@ -42,10 +55,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(product $product)
     {
         //
     }
@@ -53,10 +66,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(product $product)
     {
         //
     }
@@ -64,11 +77,11 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
+     * @param  \App\Http\Requests\UpdateproductRequest  $request
+     * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateproductRequest $request, product $product)
     {
         //
     }
@@ -76,11 +89,114 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Product  $product
+     * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(product $product)
     {
         //
     }
+    public function APIList(){
+       
+        // console.log("ddddddddddddddddddd"); 
+        return Product::all();
+    }
+    public function APIPost(Request $req){
+       // console.log("cccccccccccccccc"); 
+        // $karimdata=$request->session()->get('karimkey');
+        $karimdata=Session::get('karimkey');
+       
+        $req->file('image');
+        $fileName="";
+        if ( $req->has('image')){
+            $image = $req->file('image');
+           
+            $fileName = $image->getClientOriginalName() . time() . "." . $image->getClientOriginalExtension();
+            $image->move('./shop/', $fileName);    
+        }
+       
+        $product = new Product();
+        $product->shop_id = $req->shop_id;
+        $product->p_type = $karimdata;
+        $product->p_name = $req->p_name;
+        $product->p_price = $req->p_price;
+        $product->image = $fileName;
+        if( $product->p_price > 0)
+        {
+            $product->save();
+        }
+
+      
+    
+
+        return  $product;
+    }
+
+
+
+
+
+
+
+    public function APIProduct_details(Request $request)
+    {
+        
+        $stu = product::where('id',$request->id)->first();
+        if($stu)
+        {
+           return $stu;
+        }
+    }
+
+    
+
+    public function delete_product(Request $request)
+    {
+        
+        $stu = product::where('id',$request->id)->first();
+$id=$request->id;
+        // if($stu)
+        // {
+        //    return $stu;
+        // }
+
+        if($stu){
+            // product::find($stu)->destroy();
+            product::destroy($id);
+        }
+    }
+ 
+
+    public function product_edited(Request $req)
+    {
+        // $value = $request->session()->get('user');
+        $product = product::where('id',$req->id)->first();
+
+        $req->file('image');
+        $fileName="";
+        if ( $req->has('image')){
+            $image = $req->file('image');
+           
+            $fileName = $image->getClientOriginalName() . time() . "." . $image->getClientOriginalExtension();
+            $image->move('./shop/', $fileName);    
+        }
+       
+        
+        $product->p_name = $req->p_name;
+        $product->p_price = $req->p_price;
+        $product->image = $fileName;
+       if($product)
+       {
+        $product->save();
+        // return redirect()->route('profile');
+       }
+      
+    }
+    public function APIProducts(){
+        return Product::all();
+    }
+
 }
+
+   
+

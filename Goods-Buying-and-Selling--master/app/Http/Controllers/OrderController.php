@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\AllUser;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
-
+use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
@@ -82,5 +83,13 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+    public function APIOrder()
+    {
+        return Order::all();
+    }
+    public function APIOrderedUser(Request $request)
+    {
+        return AllUser::where('id', $request->id)->first();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Delivery;
 use App\Models\AllUser;
 use App\Http\Requests\StoreAllUserRequest;
 use App\Http\Requests\UpdateAllUserRequest;
@@ -83,10 +83,51 @@ class AllUserController extends Controller
     {
         //
     }
-    public function APIRegistration()
+    public function APIRegistration(Request $request)
+    
     {
-        return  AllUser::all();
+      
+        $user= AllUser::where('type', $request->value)->get();
+        if($user)
+        {
+            return $user;
+        }
+        return "nothing";
     }
+    public function APIRequestedUser(Request $request)
+    {
+        $user= AllUser::where('status','requested')->get();
+        if($user)
+        {
+            return $user;
+        }
+        return "nothing";
+    }
+
+    public function APIEditUserStatus(Request $request)
+    {
+        $user= AllUser::where('id', $request->id)->first();
+        if($user)
+        {
+            $user->status = 'accept';
+            $user->save();
+            return "User Accepted";
+        }
+        return "nothing";
+    }
+
+    public function APIRemoveUser(Request $request)
+    {
+        $user= AllUser::where('id', $request->id)->first();
+        if($user)
+        {
+           
+            $user->delete();
+            return "Request Cancelled";
+        }
+        return "nothing";
+    }
+
     public function APIRegistrationSubmitted(Request $request)
     {
        
@@ -98,28 +139,29 @@ class AllUserController extends Controller
         $st->address = $request->address;
         $st->password =$request->password;
         $st->type = $request->type;
-        $st->status = "active";
-       // $st->created_at= new Date();
+        $st->status = $request->status;
+       
         if($st)
         {
             $st->save();
-            return "Successfully User Added";
+            return "success";
+        }
+        else
+        {
+            return 'nothing';
         }
             
         
     }
-    public function APILoginSubmitted(Request $request)
+    public function APILogin(Request $request)
     {
-        $validate = $request->validate([
-            'email'=>'email',
-             'password'=>'required'
-        ]);
+    
         $stu = AllUser::where('email',$request->email)
                        ->where('password',$request->password)
                         ->first();
         if($stu){
            
-            return "Successfuly Logged in";
+            return $stu->type;
         }
         return "Something went wrong";              
     }
@@ -132,21 +174,31 @@ class AllUserController extends Controller
         {
            return $stu;
         }
+        return "nothing found";
     }
-    public function AdminprofileSubmitted(Request $request)
+   
+    public function APIUserEdited(Request $request)
     {
-        $value = $request->session()->get('user');
-        $st = Alluser::where('id',$value)->first();
+      
+        $st = Alluser::where('id',$request->id)->first();
         $st->name = $request->name;
+        $st->email = $request->email;
         $st->phone = $request->phone;
         $st->nid = $request->nid;
         $st->address = $request->address;
-        $st->password = $request->password;
        if($st)
        {
         $st->save();
-        return redirect()->route('profile');
+        return "Successfuly Updated";
+        
        }
       
+    }
+
+    public function DeliveryHistory()
+    
+    {
+      
+        return Delivery::all();
     }
 }
