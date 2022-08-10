@@ -92,4 +92,53 @@ class OrderController extends Controller
     {
         return AllUser::where('id', $request->id)->first();
     }
+    
+    public function APIOrderDetails(){
+        $all_item = Order::count();
+        if($all_item == 0)
+        {
+            $all_item =1;
+        }
+        $pending = Order::where('status','pending')->count();
+        $accept = Order::where('status','accept')->count();
+        $on_the_way = Order::where('status','ontheway')->count();
+        $delivered = Order::where('status','delivered')->count();
+        $pending_percentage = (($pending) / ($all_item))*100;
+        $accept_percentage = ($accept/$all_item)*100;
+        $on_the_way_percentage = ($on_the_way/$all_item)*100;
+        $delivered_percentage = ($delivered/$all_item)*100;
+        return [
+            'all_item' =>$all_item,
+            'pending' =>$pending,
+            'accept' =>$accept,
+            'on_the_way' =>$on_the_way,
+            'delivered' =>$delivered,
+            'pending_percentage' =>$pending_percentage,
+            'accept_percentage' =>$accept_percentage,
+            'on_the_way_percentage' =>$on_the_way_percentage,
+            'delivered_percentage' =>$delivered_percentage
+        ];
+
+    }
+
+    public function DelOrderReq()
+    {
+        return Order::where('status','pending')->get();
+    }
+    public function DelOrderConfirm()
+    {
+        return Order::where('status','ontheway')->get();
+    }
+
+    public function Delivered(Request $request)
+    {
+       $item= Order::where('id',$request->id)->first();
+       $item->status='delivered';
+       if($item){
+       
+        $item->save();
+        return 'success';
+       }
+       return 'failed';
+    }
 }

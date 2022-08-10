@@ -1,14 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\AllUser;
 use App\Models\product;
-
+use App\Models\Order;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+
+
+
+use Illuminate\Support\Facades\DB;
 
 ////
 
@@ -92,10 +96,6 @@ class ProductController extends Controller
      * @param  \App\Models\product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(product $product)
-    {
-        //
-    }
     public function APIList(){
        
         // console.log("ddddddddddddddddddd"); 
@@ -117,10 +117,20 @@ class ProductController extends Controller
        
         $product = new Product();
         $product->shop_id = $req->shop_id;
-        $product->p_type = $karimdata;
         $product->p_name = $req->p_name;
-        $product->p_price = $req->p_price;
         $product->image = $fileName;
+        $product->p_type = $req->p_type;
+
+        $product->status = $req->status;
+        $product->p_description = $req->p_description;
+        $product->p_qty = $req->p_qty;
+        $product->p_price = $req->p_price;
+        $product->p_offer = $req->p_offer;
+       
+
+
+
+
         if( $product->p_price > 0)
         {
             $product->save();
@@ -169,6 +179,7 @@ $id=$request->id;
 
     public function product_edited(Request $req)
     {
+       // print_r($req);
         // $value = $request->session()->get('user');
         $product = product::where('id',$req->id)->first();
 
@@ -185,6 +196,15 @@ $id=$request->id;
         $product->p_name = $req->p_name;
         $product->p_price = $req->p_price;
         $product->image = $fileName;
+
+        $product->p_type = $req->p_type;
+
+        $product->status = $req->status;
+        $product->p_description = $req->p_description;
+        $product->p_qty = $req->p_qty;
+        $product->p_price = $req->p_price;
+        $product->p_offer = $req->p_offer;
+
        if($product)
        {
         $product->save();
@@ -195,7 +215,130 @@ $id=$request->id;
     public function APIProducts(){
         return Product::all();
     }
+    public function OrderTracking(){
+       
+     
+        return Order::all();
+       
 
+    }
+
+    public function OrderList(){
+       
+     
+        return Order::where('status','pending')->get();
+    }
+
+    
+    public function delete_order(Request $request)
+    {
+        
+        $stu = Order::where('id',$request->id)->first();
+$id=$request->id;
+        // if($stu)
+        // {
+        //    return $stu;
+        // }
+
+        if($stu){
+            // product::find($stu)->destroy();
+            Order::destroy($id);
+        }
+    }
+
+
+    public function accept_order(Request $request)
+    {
+        
+        $stu = Order::where('id',$request->id)->first();
+            
+        // if($stu)
+        // {
+        //    return $stu;
+        // }
+
+        if($stu){
+
+            // $stu->u_id = $req->p_name;
+            // $stu->Price = $req->p_price;
+            $stu->status = "ontheway";
+            $stu->save();
+   
+          
+        }
+    }
+
+
+    public function detail_orderlist(Request $request)
+    {
+        
+        // print_r($request->id);
+
+//         $order = Order::where('id',$request->id)->first();
+
+// $detail_order = Orderdetail::where('id',$order->id)->first();
+
+// $product = Orderdetail::where('id',$detail_order->p_id)->first();
+
+
+//         // if($stu)
+//         // {
+//         //    return $stu;
+//         // }
+
+//         if($stu){
+
+//             // $stu->u_id = $req->p_name;
+//             // $stu->Price = $req->p_price;
+//             $stu->status = "accepted";
+//             $stu->save();
+   
+          
+//         }
+
+
+      
+        $posts = DB::table('orderdetails')
+        ->join('products', 'orderdetails.p_id', '=', 'products.id')
+        // ->join('ranks', 'users.rank_id', '=', 'ranks.id')
+        // ->join('regions', 'users.region_id', '=', 'regions.id')
+        //->join('postcomments', 'posts.id', '=', 'postcomments.post_id')
+        ->select(
+            'orderdetails.o_id as order_id',
+            'orderdetails.qty as order_qty',
+            'orderdetails.price as order_qty_total_price',
+            'products.p_name as product_name',
+            'products.status as product_status',
+            'products.p_price as p_price',
+           
+          //'postcomments.comment as postcomment',
+          //'postcomments.author_id as commentauthor'
+          )
+        ->where('orderdetails.o_id', '=', $request->id)
+        ->get();
+        // print_r($posts);
+        return $posts;
+
+
+
+
+
+
+    }
+
+    public function APIUserEdited_get(Request $request)
+    {
+        
+        $stu = AllUser::where('id',$request->id)->first();
+$id=$request->id;
+        // if($stu)
+        // {
+        //    return $stu;
+        // }
+
+       return $stu;
+    }
+    
 }
 
    

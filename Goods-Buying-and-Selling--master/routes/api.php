@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/login',[TokenController::class,'APILogin']);
+Route::get('/user/{id}',[AllUserController::class,'APIUser']);
 Route::post('/logout',[TokenController::class,'APILogout']);
 Route::get('/registration/{value}',[AllUserController::class,'APIRegistration']);
 Route::post('/registration',[AllUserController::class,'APIRegistrationSubmitted']);
@@ -36,6 +37,9 @@ Route::get('/order',[OrderController::class,'APIOrder']);
 Route::get('/product',[ProductController::class,'APIProducts']);
 Route::get('/ordered_user/{id}',[OrderController::class,'APIOrderedUser']);
 Route::post('/email',[EmailController::class,'sendEmail']);
+Route::get('/data',[AllUserController::class,'APIUserData']);
+Route::get('/order_status_details',[OrderController::class,'APIOrderDetails']);
+Route::get('/today_delivery_man_request',[AllUserController::class,'TodaysDeliverymanRequest']);
 //tushar
 Route::get('/delete_product/{id}',[ProductController::class,'delete_product']);
 Route::post('/product_edited',[ProductController::class,'product_edited']);
@@ -45,4 +49,15 @@ Route::post('/products/list',[ProductController::class,'APIPost'])->name('Produc
 Route::post('/logoutt',[TokenController::class,'logout']); 
 Route::post('/seller_email',[EmailController::class,'SellerEmail']);
 Route::post('/delivery_email',[EmailController::class,'DeliveryEmail']);
+Route::get('/orders/list',[ProductController::class,'OrderList']);
+Route::get('/update/{id}',[ProductController::class,'APIUserEdited_get']);
+
+Route::get('/delete_order/{id}',[ProductController::class,'delete_order']);
+Route::get('/accept_order/{id}',[ProductController::class,'accept_order']);
+Route::get('/detail_orderlist/{id}',[ProductController::class,'detail_orderlist']);
+Route::get('/order_tracking',[ProductController::class,'OrderTracking']);
+Route::get('/order_req',[OrderController::class,'DelOrderReq']);
+Route::get('/confirm_order',[OrderController::class,'DelOrderConfirm']);
+Route::get('/delivered_order/{id}',[OrderController::class,'Delivered']);
+
 

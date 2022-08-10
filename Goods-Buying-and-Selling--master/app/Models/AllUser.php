@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class AllUser extends Model
 {
-    public $timestamps= false;
+   
     use HasFactory;
 }

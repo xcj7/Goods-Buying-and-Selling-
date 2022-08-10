@@ -108,7 +108,7 @@ class EmailController extends Controller
                 'password' => $st->password,
             ];
       
-            Mail::to($myEmail)->send(new Seller($details));
+            Mail::to($myEmail)->send(new ContactMail($details));
             return "Deliveryman Successfuly registered";
         }
         return "Something went wrong";
